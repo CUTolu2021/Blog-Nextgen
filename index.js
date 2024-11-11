@@ -18,8 +18,14 @@ mongoose.connect(process.env.MONGODB, {useNewUrlParser: true})
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
+//latifat working
 console.log(process.env.MONGODB)
+console.log(process.env.PORT)
+console.log("testing 3456")
+console.log("Testing")
 
 app.listen(process.env.PORT, () => {
     console.log(`Server started on port ${process.env.PORT}`)
 })
+
+//latifat working
