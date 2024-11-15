@@ -3,7 +3,8 @@ const {
     createBlogPost,
     getAllPost,
     getAllById,
-    deleteBlogPost
+    deleteBlogPost,
+    updateBlogPost
 } = require("../controllers/blog.controller");
 
 const BlogRouter = express.Router();
@@ -12,7 +13,7 @@ BlogRouter.route("/").get(getAllPost).post(createBlogPost);
 
 BlogRouter.route("/:id")
   .get(getAllById)
-  
+  .patch(updateBlogPost)
   .delete(deleteBlogPost);
 
 module.exports = BlogRouter;

@@ -15,7 +15,7 @@ const userschema = new Schema({
 {
     timestamps:true
 })
-const User = model("User",usersschema)
+const User = model("User",userschema)
 
 
 
