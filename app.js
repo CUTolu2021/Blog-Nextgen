@@ -18,3 +18,4 @@ app.use("/rating",ratingRouter)
 app.use("/comment",commentRouter)
 
 module.exports = app
+
