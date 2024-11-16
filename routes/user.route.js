@@ -4,13 +4,16 @@ const {
     getUser,
     getAllUser,
     deleteUser,
-    updateUser
+    updateUser,
+    signIn
 } = require("../controllers/user.controller");
 const hashPassword = require("../middleware/hashPassword")
+
 
 const userRouter = express.Router();
 
 userRouter.route("/").get(getAllUser).post(hashPassword,createUser);
+userRouter.route("/signin").post(hashPassword,signIn);
 
 userRouter.route("/:id")
     .get(getUser)

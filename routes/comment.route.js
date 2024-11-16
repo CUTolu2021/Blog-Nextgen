@@ -9,8 +9,9 @@ const {
 } = require("../controllers/comment.controller");
 
 const commentRouter = express.Router();
+const {verifyJWTAuthToken} = require("../middleware/authFunctions");
 
-commentRouter.route("/").get(getAllComment).post(createComment);
+commentRouter.route("/").get(getAllComment).post(verifyJWTAuthToken,createComment);
 commentRouter.route("/blogs/:blogId").get(getAllCommentByBlog);
 
 commentRouter.route("/:id")

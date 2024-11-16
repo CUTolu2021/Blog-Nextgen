@@ -8,8 +8,10 @@ const {
     updateRating
 } = require("../controllers/rating.controller");
 
+const {verifyJWTAuthToken} = require("../middleware/authFunctions");
+
 const ratingRouter = express.Router();
-ratingRouter.route("/").get(getAllRating).post(createRating);
+ratingRouter.route("/").get(getAllRating).post(verifyJWTAuthToken,createRating);
 ratingRouter.route("/blogs/:blogId").get(getAllRatingbyBlog)
 
 ratingRouter.route("/:id")

@@ -6,10 +6,12 @@ const {
     deleteBlogPost,
     updateBlogPost
 } = require("../controllers/blog.controller");
+const {verifyJWTAuthToken} = require("../middleware/authFunctions");
+
 
 const blogRouter = express.Router();
 
-blogRouter.route("/").get(getAllPost).post(createBlogPost);
+blogRouter.route("/").get(getAllPost).post(verifyJWTAuthToken,createBlogPost);
 
 blogRouter.route("/:id")
   .get(getAllById)
