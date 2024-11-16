@@ -13,7 +13,7 @@ const hashPassword = async (req, res, next) => {
   
   const createAuthenticationToken = async (req, res) => {
     const token = jwt.sign({ user: { ...req } }, process.env.JWT_SECRET, {
-      
+  
       expiresIn: process.env.JWT_EXPIRATION,
   });
   return res.status(200).json({

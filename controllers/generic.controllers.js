@@ -10,7 +10,8 @@ const getAll = (Model) => async (req, res) => {
     } catch (err) {
       res.status(500).json({
         status: "failure",
-        message: err.message,
+        message: err.message ? err.message : "Internal Serve error",
+      
       });
     }
   };
@@ -51,7 +52,7 @@ const getAll = (Model) => async (req, res) => {
     } catch (err) {
       return res.status(500).json({
         status: "failure",
-        message: err.message,
+        message: err.message ? err.message : "Internal Serve error",
       });
     }
   };
@@ -76,20 +77,26 @@ const getAll = (Model) => async (req, res) => {
     } catch (err) {
       return res.status(500).json({
         status: "failure",
-        message: err.message,
+        message: err.message ? err.message : "Internal Serve error",
       });
     }
   };
   
   const deleteOne = (Model, name) => async (req, res) => {
     try {
-      await Model.findByIdAndDelete(req.params.id);
+      const deletedData = await Model.findByIdAndDelete(req.params.id);
+      if (!deletedData) {
+        return res.status(404).json({
+          status: "failure",
+          message: `${name} with id ${req.params.id} not found`,
+        });
+      }
       res.json({
         message: `${name} deleted successfully`,
       });
     } catch (err) {
       res.status(404).json({
-        message: err.message,
+        message: err.message ? err.message : "Internal Serve error",
       });
     }
   };
