@@ -7,6 +7,7 @@ const {
     getAllRatingbyBlog,
     updateRating
 } = require("../controllers/rating.controller");
+const { sameUser } = require("../controllers/user.controller");
 
 const {verifyJWTAuthToken} = require("../middleware/authFunctions");
 
@@ -16,7 +17,7 @@ ratingRouter.route("/blogs/:blogId").get(getAllRatingbyBlog)
 
 ratingRouter.route("/:id")
     .get(getRating)
-    .patch(updateRating)
-    .delete(deleteRating);
+    .patch(verifyJWTAuthToken, sameUser,updateRating)
+    .delete(verifyJWTAuthToken, sameUser,deleteRating);
 
 module.exports = ratingRouter;

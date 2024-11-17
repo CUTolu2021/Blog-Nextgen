@@ -12,6 +12,8 @@ const createComment = createOne(Comment, "Comment");
 const updateComment = updateOne(Comment,"Comment");
 const getAllComment = getAll(Comment);
 const getComment =  getOne( Comment,"Comment")
+
+//This function uses the route: comment/blogs/:blogId and gets all comments by blog
 const getAllCommentByBlog = async (req, res) => {
     const getComment = await Comment.find({ blog: req.params.blogId });
     res.json(getComment);

@@ -5,19 +5,22 @@ const {
     getAllUser,
     deleteUser,
     updateUser,
-    signIn
+    signIn,
+    sameUser
 } = require("../controllers/user.controller");
 const hashPassword = require("../middleware/hashPassword")
+const {verifyJWTAuthToken} = require("../middleware/authFunctions");
 
 
 const userRouter = express.Router();
 
 userRouter.route("/").get(getAllUser).post(hashPassword,createUser);
-userRouter.route("/signin").post(hashPassword,signIn);
 
 userRouter.route("/:id")
     .get(getUser)
-    .patch(updateUser)
-    .delete(deleteUser);
+    .patch(verifyJWTAuthToken, sameUser,updateUser)
+    .delete(verifyJWTAuthToken, sameUser,deleteUser);
+
+userRouter.route("/signin").post(signIn);
 
 module.exports = userRouter;

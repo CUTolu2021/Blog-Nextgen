@@ -29,9 +29,7 @@ const signIn = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid Username or Password" });
     }
     user.password = undefined;
-  
     console.log(user);
-  
     req.user = user;
     createAuthenticationToken(req.user, res);
   };
@@ -40,8 +38,16 @@ const signIn = async (req, res, next) => {
     const { id } = req.params;
     console.log(req.user);
     if (req.user.user._doc._id !== id)
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "You don't have control over this" });
     next();
+  };
+
+  //Added this function so only authors can create blogs.
+  const adminUser = (req, res, next) => {
+    if (req.user.user._doc.role === "admin" || req.user.user._doc.role === "author"){
+    next();
+  }
+    return res.status(401).json({ message: "You are not an author" });
   };
 
 
@@ -52,5 +58,6 @@ module.exports = {
     deleteUser,
     updateUser,
     signIn,
-    sameUser
+    sameUser,
+    adminUser
 }

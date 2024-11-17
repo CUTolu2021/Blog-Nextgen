@@ -1,3 +1,5 @@
+const Blog = require("../models/blog.model");
+
 // Get all from db
 const getAll = (Model) => async (req, res) => {
   try {
@@ -10,7 +12,7 @@ const getAll = (Model) => async (req, res) => {
   } catch (err) {
     res.status(500).json({
       status: "failure",
-      message: err.message ? err.message : "Internal Serve error",
+      message: err.message ? err.message : "Internal Server error",
     
     });
   }
@@ -28,7 +30,7 @@ const createOne = (Model, name) => async (req, res) => {
   } catch (err) {
     res.status(400).json({
       status: "failure",
-      message: err.message ? err.message : "Internal Serve error",
+      message: err.message ? err.message : "Internal Server error",
     });
   }
 };
@@ -36,8 +38,16 @@ const createOne = (Model, name) => async (req, res) => {
 // Get By Id
 const getOne = (Model, name) => async (req, res) => {
   try {
-    const data = await Model.findById(req.params.id);
-
+    let data;
+    //Populate not working
+    if(Model === Blog){
+      console.log("Blog");
+      data = await Model.findById(req.params.id).populate("comments").populate("ratings");
+      console.log(data);
+    }
+    else{
+      data = await Model.findById(req.params.id);      
+    }
     if (!data) {
       return res.status(404).json({
         status: "failure",
@@ -52,7 +62,7 @@ const getOne = (Model, name) => async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       status: "failure",
-      message: err.message ? err.message : "Internal Serve error",
+      message: err.message ? err.message : "Internal Server error",
     });
   }
 };
@@ -77,7 +87,7 @@ const updateOne = (Model, name) => async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       status: "failure",
-      message: err.message ? err.message : "Internal Serve error",
+      message: err.message ? err.message : "Internal Server error",
     });
   }
 };
@@ -96,7 +106,7 @@ const deleteOne = (Model, name) => async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({
-      message: err.message ? err.message : "Internal Serve error",
+      message: err.message ? err.message : "Internal Server error",
     });
   }
 };
