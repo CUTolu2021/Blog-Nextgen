@@ -1,5 +1,4 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
 const hashPassword = async (req, res, next) => {
   if (!req.body.password) return next();
@@ -11,6 +10,4 @@ const hashPassword = async (req, res, next) => {
   next();
 };
 
-module.exports = {
-  hashPassword,
-};
+module.exports = hashPassword;

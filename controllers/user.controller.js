@@ -1,5 +1,5 @@
+const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
-const { User } = require("../models/user.model");
 const {
   getAll,
   getOne,
@@ -7,7 +7,8 @@ const {
   deleteOne,
   updateOne,
 } = require("./generic.controllers");
-const { createAuthenticationToken } = require("../middleware/auth");
+
+const { createAuthenticationToken } = require("../middleware/authFunctions");
 
 const createUser = createOne(User, "User");
 const getAllUser = getAll(User);
@@ -15,22 +16,42 @@ const getUser = getOne(User, "User");
 const deleteUser = deleteOne(User, "User");
 const updateUser = updateOne(User, "User");
 
-// Sign in
-const signIn = async (req, res) => {
+const signIn = async (req, res, next) => {
   const { username, password } = req.body;
-  if (!username || !password)
-    return res
-      .status(400)
-      .json({ message: "Kindly provide email and password" });
-
   const user = await User.findOne({ username }).select("+password");
-  if (!user) return res.status(400).json({ message: "Invalid credentials" });
-
+  if (!user) {
+    //return res.status(401).json({ message: "Invalid Username or Password" });
+    return res.status(401).json({ message: "Invalid User" });
+  }
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+  if (!isMatch) {
+    return res.status(401).json({ message: "Invalid Username or Password" });
+  }
   user.password = undefined;
+  console.log(user);
   req.user = user;
   createAuthenticationToken(req.user, res);
+};
+
+const sameUser = (req, res, next) => {
+  const { id } = req.params;
+  console.log(req.user);
+  if (req.user.user._doc._id !== id)
+    return res
+      .status(401)
+      .json({ message: "You don't have control over this" });
+  next();
+};
+
+//Added this function so only authors can create blogs.
+const adminUser = (req, res, next) => {
+  if (
+    req.user.user._doc.role === "admin" ||
+    req.user.user._doc.role === "author"
+  ) {
+    next();
+  }
+  return res.status(401).json({ message: "You are not an author" });
 };
 
 module.exports = {
@@ -40,4 +61,6 @@ module.exports = {
   deleteUser,
   updateUser,
   signIn,
+  sameUser,
+  adminUser,
 };

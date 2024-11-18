@@ -6,17 +6,20 @@ const {
   deleteBlogPost,
   updateBlogPost,
 } = require("../controllers/blog.controller");
-const { verifyJWTAuthToken, restrictTo } = require("../middleware/auth");
+const { sameUser, adminUser } = require("../controllers/user.controller");
+const { verifyJWTAuthToken } = require("../middleware/authFunctions");
 
-const BlogRouter = express.Router();
+const blogRouter = express.Router();
 
-BlogRouter.route("/")
+blogRouter
+  .route("/")
   .get(getAllPost)
-  .post(verifyJWTAuthToken, restrictTo(["author", "admin"]), createBlogPost);
+  .post(verifyJWTAuthToken, adminUser, createBlogPost);
 
-BlogRouter.route("/:id")
+blogRouter
+  .route("/:id")
   .get(getAllById)
-  .patch(updateBlogPost)
-  .delete(deleteBlogPost);
+  .patch(verifyJWTAuthToken, sameUser, updateBlogPost)
+  .delete(verifyJWTAuthToken, sameUser, deleteBlogPost);
 
-module.exports = BlogRouter;
+module.exports = blogRouter;

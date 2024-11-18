@@ -14,8 +14,19 @@ const blogSchema = new Schema(
     author: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
+    ratings: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Rating",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -23,4 +34,4 @@ const blogSchema = new Schema(
 );
 const Blog = model("Blog", blogSchema);
 
-module.exports = { Blog };
+module.exports = Blog;
