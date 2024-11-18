@@ -2,12 +2,12 @@ const Rating = require("../models/rating.model");
 const {
      getAll,
       getOne,
-      createOne,
+      createOneAndUpdateBlog,
       updateOne,
       deleteOne,
      } = require("./generic.controllers");
 
-const createRating = createOne(Rating, "Rating");
+const createRating = createOneAndUpdateBlog(Rating, "Rating");
 const updateRating = updateOne(Rating,"Rating");
 const getAllRating = getAll(Rating);
 const getRating =  getOne( Rating,"Rating")

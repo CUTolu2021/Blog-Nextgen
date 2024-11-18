@@ -8,6 +8,7 @@ const getAll = (Model) => async (req, res) => {
       status: "success",
       message: "Data retrieved successfully",
       data,
+      totalCount: data.length
     });
   } catch (err) {
     res.status(500).json({
@@ -42,7 +43,10 @@ const getOne = (Model, name) => async (req, res) => {
     //Populate not working
     if(Model === Blog){
       console.log("Blog");
-      data = await Model.findById(req.params.id).populate("comments").populate("ratings");
+      data = await Model.findById(req.params.id).populate("comments").populate("ratings")
+      .limit(req.query.limit)
+      .skip(req.query.skip*req.query.limit)
+      .sort(req.query.sort);
       console.log(data);
     }
     else{
@@ -65,6 +69,26 @@ const getOne = (Model, name) => async (req, res) => {
       message: err.message ? err.message : "Internal Server error",
     });
   }
+};
+
+const createOneAndUpdateBlog =(Model,name)=> async (req, res) => {
+  try {
+    const data = await Model.create(req.body);
+    if(name.toLowerCase() === "comment"){
+      await Blog.findByIdAndUpdate(req.body.blog, { $push: { comments: data._id } }, { new: true })
+    }
+    else if(name.toLowerCase() === "rating"){
+      await Blog.findByIdAndUpdate(req.body.blog, { $push: { ratings: data._id } }, { new: true })
+    }
+     res.status(201).json({
+      status: "success",
+      message: `${name} created successfully`,
+      data
+    });
+        
+} catch (err) {
+    res.status(500).json({ error: err.message });
+}
 };
 
 // Update By Id
@@ -117,4 +141,5 @@ module.exports = {
   getOne,
   updateOne,
   deleteOne,
+  createOneAndUpdateBlog
 };

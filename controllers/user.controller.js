@@ -45,7 +45,7 @@ const signIn = async (req, res, next) => {
   //Added this function so only authors can create blogs.
   const adminUser = (req, res, next) => {
     if (req.user.user._doc.role === "admin" || req.user.user._doc.role === "author"){
-    next();
+    return next();
   }
     return res.status(401).json({ message: "You are not an author" });
   };
