@@ -29,14 +29,12 @@ const signIn = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid Username or Password" });
     }
     user.password = undefined;
-    console.log(user);
     req.user = user;
     createAuthenticationToken(req.user, res);
   };
   
   const sameUser = (req, res, next) => {
     const { id } = req.params;
-    console.log(req.user);
     if (req.user.user._doc._id !== id)
       return res.status(401).json({ message: "You don't have control over this" });
     next();

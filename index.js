@@ -36,4 +36,8 @@ app.listen(process.env.PORT, () => {
 3. Worked with .populate so when i get a blog by id we se the comments and rating related to it but its not working.
 4.Added a function to check if user is an admin, author or user and upted the roles in our usermodel to take an enum.
 
+ISSUE
+When we create a blog is there a way for the author id to be automatically added?
+or that is only a functionality when working with frontend frameworks
+
 */

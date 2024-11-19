@@ -3,12 +3,16 @@ const Blog = require("../models/blog.model");
 // Get all from db
 const getAll = (Model) => async (req, res) => {
   try {
-    const data = await Model.find();
+    const info = Model.find();
+    const data = await info.limit(req.query.limit)
+  .skip(req.query.skip*req.query.limit)
+  .sort(req.query.sort);
+  const totalCount = await Model.countDocuments();
     res.json({
       status: "success",
       message: "Data retrieved successfully",
       data,
-      totalCount: data.length
+      totalCount
     });
   } catch (err) {
     res.status(500).json({
@@ -43,11 +47,7 @@ const getOne = (Model, name) => async (req, res) => {
     //Populate not working
     if(Model === Blog){
       console.log("Blog");
-      data = await Model.findById(req.params.id).populate("comments").populate("ratings")
-      .limit(req.query.limit)
-      .skip(req.query.skip*req.query.limit)
-      .sort(req.query.sort);
-      console.log(data);
+      data = await Model.findById(req.params.id).populate("comments").populate("ratings");
     }
     else{
       data = await Model.findById(req.params.id);      
@@ -90,6 +90,21 @@ const createOneAndUpdateBlog =(Model,name)=> async (req, res) => {
     res.status(500).json({ error: err.message });
 }
 };
+
+const getRatingAndCommentByBlog = (Model,name) => async (req, res) => {
+  const getData =  Model.find({ blog: req.params.blogId })
+  const data = await getData.limit(req.query.limit)
+  .skip(req.query.skip*req.query.limit)
+  .sort(req.query.sort);
+  const totalCount = await Model.countDocuments({ blog: req.params.blogId });
+  
+  res.json({
+      status: "success",
+      data,
+      message:`Total number of ${name} is ${totalCount}.`
+  }
+  );
+}
 
 // Update By Id
 const updateOne = (Model, name) => async (req, res) => {
@@ -141,5 +156,6 @@ module.exports = {
   getOne,
   updateOne,
   deleteOne,
-  createOneAndUpdateBlog
+  createOneAndUpdateBlog,
+  getRatingAndCommentByBlog
 };
