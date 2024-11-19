@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGODB)
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Hello and Welcome!')
 })
 app.use("/blogs",blogRoute)
 app.use("/users",userRouter)
