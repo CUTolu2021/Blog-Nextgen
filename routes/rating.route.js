@@ -1,18 +1,27 @@
 const express = require("express");
 const {
-    createRating,
-    getRating,
-    getAllRating,
-    deleteRating,
-    updateRating
+  createRating,
+  getRating,
+  getAllRating,
+  deleteRating,
+  getAllRatingbyBlog,
+  updateRating,
+  sameUserRating,
 } = require("../controllers/rating.controller");
 
-const ratingRouter = express.Router();
-ratingRouter.route("/").get(getAllRating).post(createRating);
+const { verifyJWTAuthToken } = require("../middleware/authFunctions");
 
-ratingRouter.route("/:id")
-    .get(getRating)
-    .patch(updateRating)
-    .delete(deleteRating);
+const ratingRouter = express.Router();
+ratingRouter
+  .route("/")
+  .get(getAllRating)
+  .post(verifyJWTAuthToken, createRating);
+ratingRouter.route("/blogs/:blogId").get(getAllRatingbyBlog);
+
+ratingRouter
+  .route("/:id")
+  .get(getRating)
+  .patch(verifyJWTAuthToken, sameUserRating, updateRating)
+  .delete(verifyJWTAuthToken, sameUserRating, deleteRating);
 
 module.exports = ratingRouter;
