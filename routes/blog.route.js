@@ -8,7 +8,10 @@ const {
   sameUserBlog,
 } = require("../controllers/blog.controller");
 const { adminUser } = require("../controllers/user.controller");
-const { verifyJWTAuthToken } = require("../middleware/authFunctions");
+const {
+  verifyJWTAuthToken,
+  restrictTo,
+} = require("../middleware/authFunctions");
 
 const blogRouter = express.Router();
 
