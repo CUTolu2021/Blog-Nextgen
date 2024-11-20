@@ -3,11 +3,17 @@ const Blog = require("../models/blog.model");
 // Get all from db
 const getAll = (Model) => async (req, res) => {
   try {
-    const data = await Model.find();
+    const info = Model.find();
+    const data = await info
+      .limit(req.query.limit)
+      .skip(req.query.skip * req.query.limit)
+      .sort(req.query.sort);
+    const totalCount = await Model.countDocuments();
     res.json({
       status: "success",
       message: "Data retrieved successfully",
       data,
+      totalCount,
     });
   } catch (err) {
     res.status(500).json({
@@ -42,9 +48,8 @@ const getOne = (Model, name) => async (req, res) => {
     if (Model === Blog) {
       console.log("Blog");
       data = await Model.findById(req.params.id)
-        .populate("Comments")
-        .populate("Ratings");
-      console.log(data);
+        .populate("comments")
+        .populate("ratings");
     } else {
       data = await Model.findById(req.params.id);
     }
@@ -65,6 +70,47 @@ const getOne = (Model, name) => async (req, res) => {
       message: err.message ? err.message : "Internal Server error",
     });
   }
+};
+
+const createOneAndUpdateBlog = (Model, name) => async (req, res) => {
+  try {
+    const data = await Model.create(req.body);
+    if (name.toLowerCase() === "comment") {
+      await Blog.findByIdAndUpdate(
+        req.body.blog,
+        { $push: { comments: data._id } },
+        { new: true }
+      );
+    } else if (name.toLowerCase() === "rating") {
+      await Blog.findByIdAndUpdate(
+        req.body.blog,
+        { $push: { ratings: data._id } },
+        { new: true }
+      );
+    }
+    res.status(201).json({
+      status: "success",
+      message: `${name} created successfully`,
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const getRatingAndCommentByBlog = (Model, name) => async (req, res) => {
+  const getData = Model.find({ blog: req.params.blogId });
+  const data = await getData
+    .limit(req.query.limit)
+    .skip(req.query.skip * req.query.limit)
+    .sort(req.query.sort);
+  const totalCount = await Model.countDocuments({ blog: req.params.blogId });
+
+  res.json({
+    status: "success",
+    data,
+    message: `Total number of ${name} is ${totalCount}.`,
+  });
 };
 
 // Update By Id
@@ -117,4 +163,6 @@ module.exports = {
   getOne,
   updateOne,
   deleteOne,
+  createOneAndUpdateBlog,
+  getRatingAndCommentByBlog,
 };

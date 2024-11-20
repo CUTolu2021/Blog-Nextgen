@@ -6,11 +6,11 @@ const {
   deleteComment,
   updateComment,
   getAllCommentByBlog,
+  sameUserComment,
 } = require("../controllers/comment.controller");
 
 const commentRouter = express.Router();
 const { verifyJWTAuthToken } = require("../middleware/authFunctions");
-const { sameUser } = require("../controllers/user.controller");
 
 commentRouter
   .route("/")
@@ -21,7 +21,7 @@ commentRouter.route("/blogs/:blogId").get(getAllCommentByBlog);
 commentRouter
   .route("/:id")
   .get(getComment)
-  .patch(verifyJWTAuthToken, sameUser, updateComment)
-  .delete(verifyJWTAuthToken, sameUser, deleteComment);
+  .patch(verifyJWTAuthToken, sameUserComment, updateComment)
+  .delete(verifyJWTAuthToken, sameUserComment, deleteComment);
 
 module.exports = commentRouter;

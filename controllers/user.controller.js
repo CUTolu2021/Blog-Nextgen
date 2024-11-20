@@ -45,8 +45,10 @@ const sameUser = (req, res, next) => {
 
 //Added this function so only authors can create blogs.
 const adminUser = (req, res, next) => {
-  console.log(req.user);
-  if (req.user.role === "admin" || req.user.role === "author") {
+  if (
+    req.user.user._doc.role === "admin" ||
+    req.user.user._doc.role === "author"
+  ) {
     return next();
   }
   return res.status(401).json({ message: "You are not an author" });

@@ -5,12 +5,10 @@ const {
   getAllById,
   deleteBlogPost,
   updateBlogPost,
+  sameUserBlog,
 } = require("../controllers/blog.controller");
-const { sameUser, adminUser } = require("../controllers/user.controller");
-const {
-  verifyJWTAuthToken,
-  restrictTo,
-} = require("../middleware/authFunctions");
+const { adminUser } = require("../controllers/user.controller");
+const { verifyJWTAuthToken } = require("../middleware/authFunctions");
 
 const blogRouter = express.Router();
 
@@ -22,7 +20,7 @@ blogRouter
 blogRouter
   .route("/:id")
   .get(getAllById)
-  .patch(verifyJWTAuthToken, sameUser, updateBlogPost)
-  .delete(verifyJWTAuthToken, sameUser, deleteBlogPost);
+  .patch(verifyJWTAuthToken, sameUserBlog, updateBlogPost)
+  .delete(verifyJWTAuthToken, sameUserBlog, deleteBlogPost);
 
 module.exports = blogRouter;
