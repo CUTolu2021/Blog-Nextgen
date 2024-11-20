@@ -1,8 +1,10 @@
 const jwt = require("jsonwebtoken");
 
 const createAuthenticationToken = async (req, res) => {
-    const token = jwt.sign({ user: { ...req } }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRATION,
+  const user = { ...req };
+  //console.log(user._doc);
+  const token = jwt.sign(user._doc, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRATION,
   });
   return res.status(200).json({
     success: true,
@@ -21,7 +23,17 @@ const verifyJWTAuthToken = (req, res, next) => {
   });
 };
 
+// A more generic role restriction middleware
+const restrictTo = (allowedRolesArr) => (req, res, next) => {
+  if (!allowedRolesArr.includes(req.user.role)) {
+    res.status(401).json({ message: "Unauthorized" });
+  }
+
+  next();
+};
+
 module.exports = {
-   verifyJWTAuthToken,
-   createAuthenticationToken
-}
+  verifyJWTAuthToken,
+  createAuthenticationToken,
+  restrictTo,
+};

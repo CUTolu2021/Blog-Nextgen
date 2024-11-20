@@ -36,7 +36,7 @@ const signIn = async (req, res, next) => {
 const sameUser = (req, res, next) => {
   const { id } = req.params;
   console.log(req.user);
-  if (req.user.user._doc._id !== id)
+  if (req.user._id !== id)
     return res
       .status(401)
       .json({ message: "You don't have control over this" });
@@ -45,13 +45,20 @@ const sameUser = (req, res, next) => {
 
 //Added this function so only authors can create blogs.
 const adminUser = (req, res, next) => {
-  if (
-    req.user.user._doc.role === "admin" ||
-    req.user.user._doc.role === "author"
-  ) {
-    next();
+  console.log(req.user);
+  if (req.user.role === "admin" || req.user.role === "author") {
+    return next();
   }
   return res.status(401).json({ message: "You are not an author" });
+};
+
+// A more generic role restriction middleware
+const restrictTo = (allowedRolesArr) => (req, res, next) => {
+  if (!allowedRolesArr.includes(req.user.role)) {
+    res.status(401).json({ message: "Unauthorized" });
+  }
+
+  next();
 };
 
 module.exports = {

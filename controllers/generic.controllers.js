@@ -42,8 +42,8 @@ const getOne = (Model, name) => async (req, res) => {
     if (Model === Blog) {
       console.log("Blog");
       data = await Model.findById(req.params.id)
-        .populate("comments")
-        .populate("ratings");
+        .populate("Comments")
+        .populate("Ratings");
       console.log(data);
     } else {
       data = await Model.findById(req.params.id);

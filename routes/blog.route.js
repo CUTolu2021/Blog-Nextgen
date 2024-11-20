@@ -7,14 +7,17 @@ const {
   updateBlogPost,
 } = require("../controllers/blog.controller");
 const { sameUser, adminUser } = require("../controllers/user.controller");
-const { verifyJWTAuthToken } = require("../middleware/authFunctions");
+const {
+  verifyJWTAuthToken,
+  restrictTo,
+} = require("../middleware/authFunctions");
 
 const blogRouter = express.Router();
 
 blogRouter
   .route("/")
   .get(getAllPost)
-  .post(verifyJWTAuthToken, adminUser, createBlogPost);
+  .post(verifyJWTAuthToken, restrictTo(["admin", "author"]), createBlogPost);
 
 blogRouter
   .route("/:id")
