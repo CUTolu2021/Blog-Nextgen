@@ -19,7 +19,7 @@ mongoose
   });
 
 app.get("/", (req, res) => {
-  res.send("Hello and Welcome!");
+  res.send("Hello and Welcome! Use this postman documentation to use the API. https://docs.google.com/document/d/1HPLklKgt1WL7LJmSb36pyffMxpCvjwUrE65HXMN6qa4/edit?usp=sharing");
 });
 app.use("/blogs", blogRoute);
 app.use("/users", userRouter);
