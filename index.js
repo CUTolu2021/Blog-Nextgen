@@ -19,8 +19,10 @@ mongoose
   });
 
 app.get("/", (req, res) => {
-  res.send("Hello and Welcome! Use this postman documentation to use the API. https://docs.google.com/document/d/1HPLklKgt1WL7LJmSb36pyffMxpCvjwUrE65HXMN6qa4/edit?usp=sharing");
-});
+  res.send(`
+    <h1>API Documentation</h1>
+    <p>View the detailed Postman documentation and feel free to make comments. <a href="https://docs.google.com/document/d/1HPLklKgt1WL7LJmSb36pyffMxpCvjwUrE65HXMN6qa4/edit?usp=sharing" style="text-decoration: none; color: #337ab7;">Click here</a>.</p>
+  `);});
 app.use("/blogs", blogRoute);
 app.use("/users", userRouter);
 app.use("/ratings", ratingRouter);
